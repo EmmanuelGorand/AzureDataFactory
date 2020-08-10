@@ -22,7 +22,7 @@
 				}
 			],
 			"transformations": [],
-			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT guid, texte FROM adf.source;',\n\tformat: 'query') ~> source1\nsource1 sink(input(\n\t\tID as integer,\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tguid,\n\t\ttexte\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+			"script": "source(output(\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT guid, texte FROM adf.Source',\n\tformat: 'query') ~> source1\nsource1 sink(input(\n\t\tID as integer,\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tguid,\n\t\ttexte\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 		}
 	}
 }
