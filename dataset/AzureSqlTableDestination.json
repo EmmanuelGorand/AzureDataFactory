@@ -1,0 +1,31 @@
+{
+	"name": "AzureSqlTableDestination",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "guid",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "texte",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "adf",
+			"table": "Destination"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
