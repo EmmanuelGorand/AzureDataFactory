@@ -9,14 +9,7 @@
 						"referenceName": "AzureSqlTableSource",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
-				},
-				{
-					"dataset": {
-						"referenceName": "AzureSqlTableSource",
-						"type": "DatasetReference"
-					},
-					"name": "source2"
+					"name": "sourceSource"
 				}
 			],
 			"sinks": [
@@ -25,18 +18,11 @@
 						"referenceName": "AzureSqlTableDestination",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
-				},
-				{
-					"dataset": {
-						"referenceName": "AzureSqlTableDatesEtHeures",
-						"type": "DatasetReference"
-					},
-					"name": "sink2"
+					"name": "sinkDestination"
 				}
 			],
 			"transformations": [],
-			"script": "source(output(\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT guid, texte FROM adf.Source',\n\tformat: 'query') ~> source1\nsource(output(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT GETDATE() AS DateHeure',\n\tformat: 'query') ~> source2\nsource1 sink(input(\n\t\tID as integer,\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tguid,\n\t\ttexte\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1\nsource2 sink(input(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDateHeure\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
+			"script": "source(output(\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT guid, texte FROM adf.Source',\n\tformat: 'query') ~> sourceSource\nsourceSource sink(input(\n\t\tID as integer,\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tguid,\n\t\ttexte\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDestination"
 		}
 	}
 }
