@@ -11,7 +11,10 @@
 					"referenceName": "AzureKeyVaultLab01",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "SqlDatabaseOutilsRedOpsConnectionString"
+				"secretName": {
+					"value": "pipeline().globalParameters.SecretConnexionSql",
+					"type": "Expression"
+				}
 			}
 		}
 	}
