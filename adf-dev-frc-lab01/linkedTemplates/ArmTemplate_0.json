@@ -56,6 +56,34 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableDatesEtHeures')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseLinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "DateHeure",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": "adf",
+					"table": "DatesEtHeures"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLinkedService')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTableDestination')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -126,7 +154,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"name": "[concat(parameters('factoryName'), '/dataflowBasique')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -138,7 +166,7 @@
 								"referenceName": "AzureSqlTableSource",
 								"type": "DatasetReference"
 							},
-							"name": "source1"
+							"name": "sourceSource"
 						}
 					],
 					"sinks": [
@@ -147,11 +175,11 @@
 								"referenceName": "AzureSqlTableDestination",
 								"type": "DatasetReference"
 							},
-							"name": "sink1"
+							"name": "sinkDestination"
 						}
 					],
 					"transformations": [],
-					"script": "source(output(\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT guid, texte FROM adf.Source',\n\tformat: 'query') ~> source1\nsource1 sink(input(\n\t\tID as integer,\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tguid,\n\t\ttexte\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+					"script": "source(output(\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT guid, texte FROM adf.Source',\n\tformat: 'query') ~> sourceSource\nsourceSource sink(input(\n\t\tID as integer,\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tguid,\n\t\ttexte\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDestination"
 				}
 			},
 			"dependsOn": [
@@ -160,13 +188,46 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"name": "[concat(parameters('factoryName'), '/dataflowDatesEtHeures')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTableDatesEtHeures",
+								"type": "DatasetReference"
+							},
+							"name": "sourceDatesEtHeures"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTableDatesEtHeures",
+								"type": "DatasetReference"
+							},
+							"name": "sinkDatesEtHeures"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT GETDATE() AS DateHeure',\n\tformat: 'query') ~> sourceDatesEtHeures\nsourceDatesEtHeures sink(input(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDateHeure\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDatesEtHeures"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableDatesEtHeures')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipelinePremier')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "dataflow1",
+						"name": "dataflowDatesEtHeures",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -179,12 +240,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "dataflow1",
+								"referenceName": "dataflowDatesEtHeures",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
+									"sourceDatesEtHeures": {},
+									"sinkDatesEtHeures": {}
 								}
 							},
 							"staging": {},
@@ -199,7 +260,7 @@
 				"lastPublishTime": "2020-08-09T09:44:48Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+				"[concat(variables('factoryId'), '/dataflows/dataflowDatesEtHeures')]"
 			]
 		}
 	]
