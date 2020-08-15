@@ -3,10 +3,6 @@
 	"properties": {
 		"description": "Permet de paramétrer la base de données",
 		"parameters": {
-			"secret": {
-				"type": "String",
-				"defaultValue": "SqlDatabaseOutilsRedOpsConnectionString"
-			},
 			"SecretConnexionSql": {
 				"type": "String",
 				"defaultValue": "SqlDatabaseOutilsRedOpsConnectionString"
