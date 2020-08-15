@@ -17,15 +17,7 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "dataflowDatesEtHeures",
-						"type": "DataFlowReference",
-						"datasetParameters": {
-							"sourceDatesEtHeures": {
-								"paramText": "truc"
-							},
-							"sinkDatesEtHeures": {
-								"paramText": "truc"
-							}
-						}
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,

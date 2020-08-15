@@ -5,7 +5,7 @@
 			"referenceName": "AzureSqlDatabaseGenerique",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"SecretConnexionSql": "SqlDatabaseOutilsRedOpsConnectionString"
+				"NomBase": "OutilsRedOps"
 			}
 		},
 		"annotations": [],
