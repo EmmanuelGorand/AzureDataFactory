@@ -2,8 +2,12 @@
 	"name": "AzureSqlTableDatesEtHeures",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSqlDatabaseLinkedService",
-			"type": "LinkedServiceReference"
+			"referenceName": "AzureSqlDatabaseGenerique",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"secret": "SqlDatabaseOutilsRedOpsConnectionString",
+				"SecretConnexionSql": "SqlDatabaseOutilsRedOpsConnectionString"
+			}
 		},
 		"parameters": {
 			"paramText": {
