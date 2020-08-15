@@ -5,6 +5,12 @@
 			"referenceName": "AzureSqlDatabaseLinkedService",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"paramText": {
+				"type": "string",
+				"defaultValue": "truc"
+			}
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [
