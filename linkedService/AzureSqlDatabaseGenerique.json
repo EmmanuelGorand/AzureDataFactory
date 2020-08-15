@@ -2,6 +2,12 @@
 	"name": "AzureSqlDatabaseGenerique",
 	"properties": {
 		"description": "Permet de paramétrer la base de données",
+		"parameters": {
+			"secret": {
+				"type": "String",
+				"defaultValue": "SqlDatabaseOutilsRedOpsConnectionString"
+			}
+		},
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
@@ -12,7 +18,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"secretName": {
-					"value": "pipeline().globalParameters.SecretConnexionSql",
+					"value": "@linkedService().secret",
 					"type": "Expression"
 				}
 			}
