@@ -1,41 +1,11 @@
 {
-	"name": "pipeline1",
+	"name": "pipelinePremier",
 	"properties": {
 		"activities": [
 			{
-				"name": "dataflowBasique",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "dataflowBasique",
-						"type": "DataFlowReference"
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					}
-				}
-			},
-			{
 				"name": "dataflowDatesEtHeures",
 				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "dataflowBasique",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
