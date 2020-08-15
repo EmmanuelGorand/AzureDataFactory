@@ -17,7 +17,15 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "dataflowDatesEtHeures",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceDatesEtHeures": {
+								"paramText": "truc"
+							},
+							"sinkDatesEtHeures": {
+								"paramText": "truc"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -54,9 +62,23 @@
 						"computeType": "General"
 					}
 				}
+			},
+			{
+				"name": "Set variable1",
+				"description": "tertert",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [
+					{
+						"name": "MaPropriete",
+						"value": "ValeurPropriete"
+					}
+				]
 			}
 		],
-		"annotations": [],
+		"annotations": [
+			"Mon annotation"
+		],
 		"lastPublishTime": "2020-08-09T09:44:48Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
