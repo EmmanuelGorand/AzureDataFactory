@@ -62,18 +62,6 @@
 						"computeType": "General"
 					}
 				}
-			},
-			{
-				"name": "Set variable1",
-				"description": "tertert",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"userProperties": [
-					{
-						"name": "MaPropriete",
-						"value": "ValeurPropriete"
-					}
-				]
 			}
 		],
 		"annotations": [
