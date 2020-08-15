@@ -1,11 +1,3 @@
 {
-	"name": "adf-dev-frc-lab01",
-	"properties": {
-		"globalParameters": {
-			"SecretConnexionSql": {
-				"type": "string",
-				"value": "SqlDatabaseOutilsRedOpsConnectionString"
-			}
-		}
-	}
+	"name": "adf-dev-frc-lab01"
 }
