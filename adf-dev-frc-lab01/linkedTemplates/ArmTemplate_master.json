@@ -7,13 +7,13 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-dev-frc-lab01"
 		},
+		"AzureSqlDatabaseGenerique_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseGenerique'"
+		},
 		"AzureKeyVaultLab01_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://kv-dev-frc-lab01.vault.azure.net/"
-		},
-		"AzureSqlDatabaseLinkedService_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "SqlDatabaseOutilsRedOpsConnectionString"
 		},
 		"containerUri": {
 			"type": "string",
@@ -42,11 +42,11 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AzureSqlDatabaseGenerique_connectionString": {
+						"value": "[parameters('AzureSqlDatabaseGenerique_connectionString')]"
+					},
 					"AzureKeyVaultLab01_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVaultLab01_properties_typeProperties_baseUrl')]"
-					},
-					"AzureSqlDatabaseLinkedService_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('AzureSqlDatabaseLinkedService_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},

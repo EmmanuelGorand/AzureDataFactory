@@ -1,1 +1,6 @@
-{}
+{
+	"MonParametreGlobal": {
+		"type": "string",
+		"value": "truc"
+	}
+}

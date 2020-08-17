@@ -5,11 +5,11 @@
 		"factoryName": {
 			"value": "adf-dev-frc-lab01"
 		},
+		"AzureSqlDatabaseGenerique_connectionString": {
+			"value": ""
+		},
 		"AzureKeyVaultLab01_properties_typeProperties_baseUrl": {
 			"value": "https://kv-dev-frc-lab01.vault.azure.net/"
-		},
-		"AzureSqlDatabaseLinkedService_properties_typeProperties_connectionString_secretName": {
-			"value": "SqlDatabaseOutilsRedOpsConnectionString"
 		}
 	}
 }
