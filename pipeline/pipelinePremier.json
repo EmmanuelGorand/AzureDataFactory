@@ -56,6 +56,12 @@
 				}
 			}
 		],
+		"variables": {
+			"MaVariable": {
+				"type": "String",
+				"defaultValue": "Texte dans ma variable"
+			}
+		},
 		"annotations": [
 			"Mon annotation"
 		],
