@@ -54,12 +54,49 @@
 						"computeType": "General"
 					}
 				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MonTexte",
+					"value": "Texte assigné"
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('MonTexte'),'truc')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set variable2",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "MonTexte",
+								"value": "truc"
+							}
+						}
+					]
+				}
 			}
 		],
 		"variables": {
-			"MaVariable": {
+			"MonTexte": {
 				"type": "String",
 				"defaultValue": "Texte dans ma variable"
+			},
+			"MonTableau": {
+				"type": "Array"
 			}
 		},
 		"annotations": [
