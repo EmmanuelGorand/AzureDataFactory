@@ -5,7 +5,14 @@
 			{
 				"name": "dataflowDatesEtHeures",
 				"type": "ExecuteDataFlow",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "SetDateHeureDemarrage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -26,7 +33,7 @@
 				}
 			},
 			{
-				"name": "TestMonTexte",
+				"name": "TestLancerDftBasique",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -85,6 +92,19 @@
 					"variableName": "Lancer DFT basique",
 					"value": true
 				}
+			},
+			{
+				"name": "SetDateHeureDemarrage",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DateHeureDemarrage",
+					"value": {
+						"value": "@utcnow('U')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"variables": {
@@ -97,6 +117,9 @@
 			},
 			"Lancer DFT basique": {
 				"type": "Boolean"
+			},
+			"DateHeureDemarrage": {
+				"type": "String"
 			}
 		},
 		"annotations": [
