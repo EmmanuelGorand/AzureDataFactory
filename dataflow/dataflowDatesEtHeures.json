@@ -22,7 +22,7 @@
 				}
 			],
 			"transformations": [],
-			"script": "source(output(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT GETDATE() AS DateHeure',\n\tformat: 'query') ~> sourceDatesEtHeures\nsourceDatesEtHeures sink(input(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDateHeure\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDatesEtHeures"
+			"script": "parameters{\n\tparameterDateHeureDemarrage as date\n}\nsource(output(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT GETDATE() AS DateHeure',\n\tformat: 'query') ~> sourceDatesEtHeures\nsourceDatesEtHeures sink(input(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDateHeure\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDatesEtHeures"
 		}
 	}
 }
