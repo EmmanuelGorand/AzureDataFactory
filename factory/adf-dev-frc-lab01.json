@@ -1,0 +1,11 @@
+{
+	"name": "adf-dev-frc-lab01",
+	"properties": {
+		"globalParameters": {
+			"MonParametreGlobal": {
+				"type": "string",
+				"value": "truc"
+			}
+		}
+	}
+}

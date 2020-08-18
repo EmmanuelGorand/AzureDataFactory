@@ -1,0 +1,26 @@
+{
+	"name": "AzureSqlTableDatesEtHeures",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseGenerique",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"NomBase": "OutilsRedOps"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "DateHeure",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "adf",
+			"table": "DatesEtHeures"
+		}
+	}
+}

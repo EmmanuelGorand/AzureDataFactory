@@ -1,0 +1,26 @@
+{
+	"name": "AzureSqlDatabaseGenerique",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Permet de paramétrer la base de données",
+		"parameters": {
+			"NomBase": {
+				"type": "String",
+				"defaultValue": "OutilsRedOps"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=emmanuelgorand.database.windows.net;Initial Catalog=@{linkedService().NomBase};User ID=Emmanuel",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVaultLab01",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "Emmanuel"
+			}
+		}
+	}
+}

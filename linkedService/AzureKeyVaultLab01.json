@@ -1,0 +1,11 @@
+{
+	"name": "AzureKeyVaultLab01",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://kv-dev-frc-lab01.vault.azure.net/"
+		}
+	}
+}
