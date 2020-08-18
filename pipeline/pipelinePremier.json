@@ -108,13 +108,6 @@
 			}
 		],
 		"variables": {
-			"MonTexte": {
-				"type": "String",
-				"defaultValue": "Texte dans ma variable"
-			},
-			"MonTableau": {
-				"type": "Array"
-			},
 			"Lancer DFT basique": {
 				"type": "Boolean"
 			},
