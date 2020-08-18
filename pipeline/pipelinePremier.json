@@ -123,6 +123,7 @@
 			}
 		},
 		"annotations": [
+			"Mon annotation",
 			"Mon annotation"
 		],
 		"lastPublishTime": "2020-08-09T09:44:48Z"
