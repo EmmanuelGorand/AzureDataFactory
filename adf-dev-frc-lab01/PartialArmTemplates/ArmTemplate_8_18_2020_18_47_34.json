@@ -1,0 +1,182 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-dev-frc-lab01"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipelinePremier')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dataflowDatesEtHeures",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SetDateHeureDemarrage",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflowDatesEtHeures",
+								"type": "DataFlowReference",
+								"parameters": {
+									"parameterDateHeureDemarrage": {
+										"value": "@variables('DateHeureDemarrage')",
+										"type": "Expression"
+									}
+								}
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					},
+					{
+						"name": "TestLancerDftBasique",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "SetLancerDftBasique",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('Lancer DFT basique'),true)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "dataflowBasique",
+									"type": "ExecuteDataFlow",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataflow": {
+											"referenceName": "dataflowBasique",
+											"type": "DataFlowReference"
+										},
+										"compute": {
+											"coreCount": 8,
+											"computeType": "General"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "SetLancerDftBasique",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "dataflowDatesEtHeures",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Lancer DFT basique",
+							"value": true
+						}
+					},
+					{
+						"name": "SetDateHeureDemarrage",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "DateHeureDemarrage",
+							"value": {
+								"value": "@utcnow('U')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"variables": {
+					"Lancer DFT basique": {
+						"type": "Boolean"
+					},
+					"DateHeureDemarrage": {
+						"type": "String"
+					}
+				},
+				"annotations": [
+					"Mon annotation",
+					"Mon annotation"
+				],
+				"lastPublishTime": "2020-08-09T09:44:48Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflowDatesEtHeures')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflowDatesEtHeures')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTableDatesEtHeures",
+								"type": "DatasetReference"
+							},
+							"name": "sourceDatesEtHeures"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTableDatesEtHeures",
+								"type": "DatasetReference"
+							},
+							"name": "sinkDatesEtHeures"
+						}
+					],
+					"transformations": [],
+					"script": "parameters{\n\tparameterDateHeureDemarrage as date\n}\nsource(output(\n\t\tDateHeureDynamique as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: (concat(\"SELECT CAST(\",toString($parameterDateHeureDemarrage),\" AS smalldatetime) AS DateHeureDynamique\")),\n\tformat: 'query') ~> sourceDatesEtHeures\nsourceDatesEtHeures sink(input(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDateHeure = DateHeureDynamique\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDatesEtHeures"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
