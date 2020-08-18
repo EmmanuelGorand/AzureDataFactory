@@ -24,13 +24,7 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "dataflowDatesEtHeures",
-						"type": "DataFlowReference",
-						"parameters": {
-							"parameterDateHeureDemarrage": {
-								"value": "@convertFromUtc(variables('DateHeureDemarrage'),'Romance Standard Time')",
-								"type": "Expression"
-							}
-						}
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
@@ -105,7 +99,7 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "DateHeureDemarrage",
+					"variableName": "varDateHeureDemarrage",
 					"value": {
 						"value": "@utcnow('U')",
 						"type": "Expression"
