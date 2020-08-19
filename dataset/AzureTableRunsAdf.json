@@ -1,0 +1,15 @@
+{
+	"name": "AzureTableRunsAdf",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureTableStorageAdf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "RunsAdf"
+		}
+	}
+}
