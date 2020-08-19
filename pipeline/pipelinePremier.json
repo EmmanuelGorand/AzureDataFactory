@@ -141,17 +141,40 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT ',pipeline().globalParameters.MonParametreGlobal,' AS DateHeureDynamique')",
+							"value": "@concat('SELECT ',variables('DateHeureDemarrage'),' AS DateHeureDynamique')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
-					"enableStaging": false
+					"sink": {
+						"type": "AzureTableSink",
+						"azureTableInsertType": "merge",
+						"azureTablePartitionKeyName": {
+							"value": "'DateHeure'",
+							"type": "Expression"
+						},
+						"writeBatchSize": 10000
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "AzureSqlTableDatesEtHeures",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureTableRunsAdf",
 						"type": "DatasetReference"
 					}
 				]
@@ -162,7 +185,8 @@
 				"type": "Boolean"
 			},
 			"DateHeureDemarrage": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "'2020-08-19T18:13:00:000000K'"
 			}
 		},
 		"annotations": [
