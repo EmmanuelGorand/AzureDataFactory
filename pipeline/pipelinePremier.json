@@ -3,42 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "dataflowDatesEtHeures",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "SetDateHeureDemarrage",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "dataflowDatesEtHeures",
-						"type": "DataFlowReference",
-						"parameters": {
-							"parameterDateHeureDemarrage": {
-								"value": "@variables('DateHeureDemarrage')",
-								"type": "Expression"
-							}
-						}
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					}
-				}
-			},
-			{
 				"name": "TestLancerDftBasique",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -111,6 +75,86 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "dataflowDatesEtHeures",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "SetDateHeureDemarrage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflowDatesEtHeures",
+						"type": "DataFlowReference",
+						"parameters": {
+							"parameterDateHeureDemarrage": "\"2018-04-15T13:00:00.0000000Z\""
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"enableStaging": false
+				}
+			},
+			{
+				"name": "Copy data2",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT ',pipeline().globalParameters.MonParametreGlobal,' AS DateHeureDynamique')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlTableDatesEtHeures",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"variables": {

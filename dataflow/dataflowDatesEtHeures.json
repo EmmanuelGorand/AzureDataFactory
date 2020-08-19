@@ -10,9 +10,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "sourceDatesEtHeures"
-				},
-				{
-					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -24,11 +21,11 @@
 					"name": "sinkDatesEtHeures"
 				},
 				{
-					"name": "sink1"
+					"name": "sink2"
 				}
 			],
 			"transformations": [],
-			"script": "parameters{\n\tparameterDateHeureDemarrage as string (\"2018-04-15T13:00:00.0000000Z\")\n}\nsource(output(\n\t\tDateHeureDynamique as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: (concat(\"SELECT CAST(\",toString($parameterDateHeureDemarrage, \"yyyy-MM-dd'T'HH:mm:ss:fffffffK\"),\" AS smalldatetime) AS DateHeureDynamique\")),\n\tformat: 'query') ~> sourceDatesEtHeures\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> source1\nsourceDatesEtHeures sink(input(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDateHeure = DateHeureDynamique\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDatesEtHeures\nsource1 sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+			"script": "parameters{\n\tparameterDateHeureDemarrage as string (\"2018-04-15T13:00:00.0000000Z\")\n}\nsource(output(\n\t\tDateHeureDynamique as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: (concat(\"SELECT CAST(\",toString($parameterDateHeureDemarrage, \"yyyy-MM-dd'T'HH:mm:ss:fffffffK\"),\" AS smalldatetime) AS DateHeureDynamique\")),\n\tformat: 'query') ~> sourceDatesEtHeures\nsourceDatesEtHeures sink(input(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDateHeure = DateHeureDynamique\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDatesEtHeures\nsourceDatesEtHeures sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
 		}
 	}
 }
