@@ -16,6 +16,11 @@
 				}
 			}
 		],
+		"variables": {
+			"DateHeureDemarrage": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
