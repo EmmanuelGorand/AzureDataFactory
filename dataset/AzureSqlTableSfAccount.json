@@ -1,0 +1,15 @@
+{
+	"name": "AzureSqlTableSfAccount",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseGenerique",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"NomBase": "OutilsRedOps"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
