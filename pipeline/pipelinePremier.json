@@ -51,7 +51,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "dataflowDatesEtHeures",
+						"activity": "CopyDataHeureDemarrage",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -64,29 +64,9 @@
 				}
 			},
 			{
-				"name": "SetDateHeureDemarrage",
-				"type": "SetVariable",
+				"name": "CopyDataHeureDemarrage",
+				"type": "Copy",
 				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "DateHeureDemarrage",
-					"value": {
-						"value": "@utcnow('o')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "dataflowDatesEtHeures",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "SetDateHeureDemarrage",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -96,18 +76,71 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataflow": {
-						"referenceName": "dataflowDatesEtHeures",
-						"type": "DataFlowReference",
-						"parameters": {
-							"parameterDateHeureDemarrage": "\"2018-04-15T13:00:00.0000000Z\""
-						}
+					"source": {
+						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "NomPipeline",
+								"value": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
+								}
+							}
+						],
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT ''', convertFromUtc(utcnow('o'),'Romance Standard Time'), ''' AS DateHeure')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"sink": {
+						"type": "AzureTableSink",
+						"azureTableInsertType": "merge",
+						"azureTableDefaultPartitionKeyValue": "DateHeure",
+						"writeBatchSize": 10000
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "DateHeure",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "DateHeure"
+								}
+							},
+							{
+								"source": {
+									"name": "NomPipeline"
+								},
+								"sink": {
+									"name": "NomPipeline"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
 					}
-				}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlTableDatesEtHeures",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureTableRunsAdf",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"variables": {
