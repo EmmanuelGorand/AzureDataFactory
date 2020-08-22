@@ -23,13 +23,13 @@
 			],
 			"transformations": [
 				{
-					"name": "SurrogateKey1"
+					"name": "ConditionalSplit1"
 				},
 				{
-					"name": "ConditionalSplit1"
+					"name": "SurrogateKey1"
 				}
 			],
-			"script": "source(output(\n\t\tId as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT Id FROM sf.[REC Données Account]',\n\tformat: 'query') ~> sourceSfAccount\nsourceSfAccount keyGenerate(output(Id as long),\n\tstartAt: 1L) ~> SurrogateKey1\nSurrogateKey1 split(ERROR_FUNCTION('SurrogateKey1@Id lessOrEquals 1000'),\n\tdisjoint: false) ~> ConditionalSplit1@(Incluses, )\nConditionalSplit1@Incluses sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkSfAccount"
+			"script": "source(output(\n\t\tClientNumeroduCompte as string,\n\t\tId as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT ClientNumeroduCompte, Id FROM sf.[REC Données Account]',\n\tformat: 'query') ~> sourceSfAccount\nSurrogateKey1 split(lesserOrEqual(SurrogateId, 1000),\n\tdisjoint: false) ~> ConditionalSplit1@(Incluses)\nsourceSfAccount keyGenerate(output(SurrogateId as long),\n\tstartAt: 1L) ~> SurrogateKey1\nConditionalSplit1@Incluses sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkSfAccount"
 		}
 	}
 }
