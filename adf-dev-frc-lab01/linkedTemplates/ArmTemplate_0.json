@@ -38,35 +38,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipelineCopyActivityTableStorage')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SetDateHeureDemarrage",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "DateHeureDemarrage",
-							"value": {
-								"value": "@utcnow('o')",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"variables": {
-					"DateHeureDemarrage": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseGenerique')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -246,6 +217,110 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pipelineCopyActivityTableStorage')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SetDateHeureDemarrage",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "DateHeureDemarrage",
+							"value": {
+								"value": "@utcnow('o')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Copy data heure demarrage",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "SetDateHeureDemarrage",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT ',variables('DateHeureDemarrage'),' AS DateHeure')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureTableSink",
+								"azureTableInsertType": "merge",
+								"azureTableDefaultPartitionKeyValue": "DateHeure",
+								"writeBatchSize": 10000
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "DateHeure",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "DateHeure"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlTableDatesEtHeures",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureTableRunsAdf",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"variables": {
+					"DateHeureDemarrage": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableDatesEtHeures')]",
+				"[concat(variables('factoryId'), '/datasets/AzureTableRunsAdf')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflowBasique')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -388,14 +463,7 @@
 					{
 						"name": "SetDateHeureDemarrage",
 						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Copy data3",
-								"dependencyConditions": [
-									"Skipped"
-								]
-							}
-						],
+						"dependsOn": [],
 						"userProperties": [],
 						"typeProperties": {
 							"variableName": "DateHeureDemarrage",
@@ -442,71 +510,6 @@
 								"computeType": "General"
 							}
 						}
-					},
-					{
-						"name": "Copy data3",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT ',variables('DateHeureDemarrage'),' AS DateHeure')",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "AzureTableSink",
-								"azureTableInsertType": "merge",
-								"azureTableDefaultPartitionKeyValue": "DateHeure",
-								"writeBatchSize": 10000
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "DateHeure",
-											"type": "String",
-											"physicalType": "varchar"
-										},
-										"sink": {
-											"name": "DateHeure"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "AzureSqlTableDatesEtHeures",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "AzureTableRunsAdf",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
 					}
 				],
 				"variables": {
@@ -526,8 +529,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/dataflowDatesEtHeures')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTableDatesEtHeures')]",
-				"[concat(variables('factoryId'), '/datasets/AzureTableRunsAdf')]",
 				"[concat(variables('factoryId'), '/dataflows/dataflowBasique')]"
 			]
 		}

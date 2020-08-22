@@ -1,0 +1,246 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-dev-frc-lab01"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipelineCopyActivityTableStorage')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SetDateHeureDemarrage",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "DateHeureDemarrage",
+							"value": {
+								"value": "@utcnow('o')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Copy data heure demarrage",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "SetDateHeureDemarrage",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT ',variables('DateHeureDemarrage'),' AS DateHeure')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureTableSink",
+								"azureTableInsertType": "merge",
+								"azureTableDefaultPartitionKeyValue": "DateHeure",
+								"writeBatchSize": 10000
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "DateHeure",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "DateHeure"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlTableDatesEtHeures",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureTableRunsAdf",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				],
+				"variables": {
+					"DateHeureDemarrage": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipelinePremier')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "TestLancerDftBasique",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "SetLancerDftBasique",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('Lancer DFT basique'),true)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "dataflowBasique",
+									"type": "ExecuteDataFlow",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataflow": {
+											"referenceName": "dataflowBasique",
+											"type": "DataFlowReference"
+										},
+										"compute": {
+											"coreCount": 8,
+											"computeType": "General"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "SetLancerDftBasique",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "dataflowDatesEtHeures",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Lancer DFT basique",
+							"value": true
+						}
+					},
+					{
+						"name": "SetDateHeureDemarrage",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "DateHeureDemarrage",
+							"value": {
+								"value": "@utcnow('o')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "dataflowDatesEtHeures",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SetDateHeureDemarrage",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflowDatesEtHeures",
+								"type": "DataFlowReference",
+								"parameters": {
+									"parameterDateHeureDemarrage": "\"2018-04-15T13:00:00.0000000Z\""
+								}
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"variables": {
+					"Lancer DFT basique": {
+						"type": "Boolean"
+					},
+					"DateHeureDemarrage": {
+						"type": "String",
+						"defaultValue": "'2020-08-19T18:13:00:000000K'"
+					}
+				},
+				"annotations": [
+					"Mon annotation",
+					"Mon annotation"
+				],
+				"lastPublishTime": "2020-08-09T09:44:48Z"
+			},
+			"dependsOn": []
+		}
+	]
+}
