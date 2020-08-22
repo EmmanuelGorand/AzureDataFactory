@@ -104,7 +104,7 @@
 							{
 								"activity": "Copy data3",
 								"dependencyConditions": [
-									"Succeeded"
+									"Skipped"
 								]
 							}
 						],
@@ -501,6 +501,35 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTableDatesEtHeures')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipelineCopyActivityTableStorage')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SetDateHeureDemarrage",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "DateHeureDemarrage",
+							"value": {
+								"value": "@utcnow('o')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"variables": {
+					"DateHeureDemarrage": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
 		}
 	]
 }
