@@ -1,0 +1,27 @@
+{
+	"name": "dataflowDonneesSfAccount",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTableSfAccount",
+						"type": "DatasetReference"
+					},
+					"name": "sourceSfAccount"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "SurrogateKey1"
+				},
+				{
+					"name": "ConditionalSplit1"
+				}
+			],
+			"script": "source(output(\n\t\tId as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT Id FROM sf.[REC Données Account]',\n\tformat: 'query') ~> sourceSfAccount\nsourceSfAccount keyGenerate(output(Id as long),\n\tstartAt: 1L) ~> SurrogateKey1\nSurrogateKey1 split(ERROR_FUNCTION('SurrogateKey1@Id lessOrEquals 1000'),\n\tdisjoint: false) ~> ConditionalSplit1@(Incluses, )"
+		}
+	}
+}
