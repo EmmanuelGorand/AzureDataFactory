@@ -1,0 +1,17 @@
+{
+	"name": "AzureTableStorage1",
+	"properties": {
+		"annotations": [],
+		"type": "AzureTableStorage",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVaultLab01",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "https://kv-dev-frc-lab01.vault.azure.net/secrets/stdevfrcadf01/474733c3049d4bb392ab10ea72af634b"
+			}
+		}
+	}
+}
