@@ -15,6 +15,10 @@
 			"type": "string",
 			"defaultValue": "https://kv-dev-frc-lab01.vault.azure.net/"
 		},
+		"AzureTableStorageAdf_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "stdevfrcadf01"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -47,6 +51,9 @@
 					},
 					"AzureKeyVaultLab01_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVaultLab01_properties_typeProperties_baseUrl')]"
+					},
+					"AzureTableStorageAdf_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('AzureTableStorageAdf_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},

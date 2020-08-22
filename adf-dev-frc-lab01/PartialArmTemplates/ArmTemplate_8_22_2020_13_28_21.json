@@ -6,18 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-dev-frc-lab01"
-		},
-		"AzureSqlDatabaseGenerique_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseGenerique'"
-		},
-		"AzureKeyVaultLab01_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://kv-dev-frc-lab01.vault.azure.net/"
-		},
-		"AzureTableStorageAdf_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "stdevfrcadf01"
 		}
 	},
 	"variables": {
@@ -63,14 +51,8 @@
 									"typeProperties": {
 										"dataflow": {
 											"referenceName": "dataflowBasique",
-											"type": "DataFlowReference",
-											"parameters": {},
-											"datasetParameters": {
-												"sourceSource": {},
-												"sinkDestination": {}
-											}
+											"type": "DataFlowReference"
 										},
-										"staging": {},
 										"compute": {
 											"coreCount": 8,
 											"computeType": "General"
@@ -142,13 +124,8 @@
 								"type": "DataFlowReference",
 								"parameters": {
 									"parameterDateHeureDemarrage": "\"2018-04-15T13:00:00.0000000Z\""
-								},
-								"datasetParameters": {
-									"sourceDatesEtHeures": {},
-									"sinkDatesEtHeures": {}
 								}
 							},
-							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"
@@ -208,15 +185,13 @@
 						"inputs": [
 							{
 								"referenceName": "AzureSqlTableDatesEtHeures",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "AzureTableRunsAdf",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					}
@@ -238,116 +213,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/dataflowDatesEtHeures')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTableDatesEtHeures')]",
-				"[concat(variables('factoryId'), '/datasets/AzureTableRunsAdf')]",
-				"[concat(variables('factoryId'), '/dataflows/dataflowBasique')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTableDatesEtHeures')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseGenerique",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"NomBase": "OutilsRedOps"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "DateHeure",
-						"type": "smalldatetime",
-						"precision": 16,
-						"scale": 0
-					}
-				],
-				"typeProperties": {
-					"schema": "adf",
-					"table": "DatesEtHeures"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseGenerique')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTableDestination')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseGenerique",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"NomBase": "OutilsRedOps"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "guid",
-						"type": "uniqueidentifier"
-					},
-					{
-						"name": "texte",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "adf",
-					"table": "Destination"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseGenerique')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTableSource')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseGenerique",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"NomBase": "OutilsRedOps"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "guid",
-						"type": "uniqueidentifier"
-					},
-					{
-						"name": "texte",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "adf",
-					"table": "Source"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseGenerique')]"
+				"[concat(variables('factoryId'), '/datasets/AzureTableRunsAdf')]"
 			]
 		},
 		{
@@ -371,49 +237,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureKeyVaultLab01')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('AzureKeyVaultLab01_properties_typeProperties_baseUrl')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseGenerique')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Permet de paramétrer la base de données",
-				"parameters": {
-					"NomBase": {
-						"type": "String",
-						"defaultValue": "OutilsRedOps"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureSqlDatabaseGenerique_connectionString')]",
-					"password": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "AzureKeyVaultLab01",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "Emmanuel"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVaultLab01')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AzureTableStorageAdf')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -427,47 +250,11 @@
 							"referenceName": "AzureKeyVaultLab01",
 							"type": "LinkedServiceReference"
 						},
-						"secretName": "[parameters('AzureTableStorageAdf_properties_typeProperties_connectionString_secretName')]"
+						"secretName": "stdevfrcadf01"
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVaultLab01')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflowBasique')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "AzureSqlTableSource",
-								"type": "DatasetReference"
-							},
-							"name": "sourceSource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "AzureSqlTableDestination",
-								"type": "DatasetReference"
-							},
-							"name": "sinkDestination"
-						}
-					],
-					"transformations": [],
-					"script": "source(output(\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT guid, texte FROM adf.Source',\n\tformat: 'query') ~> sourceSource\nsourceSource sink(input(\n\t\tID as integer,\n\t\tguid as string,\n\t\ttexte as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tguid,\n\t\ttexte\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDestination"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTableSource')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTableDestination')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/dataflowDatesEtHeures')]",
@@ -498,9 +285,7 @@
 					"script": "parameters{\n\tparameterDateHeureDemarrage as string (\"2018-04-15T13:00:00.0000000Z\")\n}\nsource(output(\n\t\tDateHeureDynamique as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: (concat(\"SELECT CAST(\",toString($parameterDateHeureDemarrage, \"yyyy-MM-dd'T'HH:mm:ss:fffffffK\"),\" AS smalldatetime) AS DateHeureDynamique\")),\n\tformat: 'query') ~> sourceDatesEtHeures\nsourceDatesEtHeures sink(input(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDateHeure = DateHeureDynamique\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDatesEtHeures"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTableDatesEtHeures')]"
-			]
+			"dependsOn": []
 		}
 	]
 }

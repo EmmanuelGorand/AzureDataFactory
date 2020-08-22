@@ -11,6 +11,9 @@
 		"AzureKeyVaultLab01_properties_typeProperties_baseUrl": {
 			"value": "https://kv-dev-frc-lab01.vault.azure.net/"
 		},
+		"AzureTableStorageAdf_properties_typeProperties_connectionString_secretName": {
+			"value": "stdevfrcadf01"
+		},
 		"containerUri": {
 			"value": ""
 		},

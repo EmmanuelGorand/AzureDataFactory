@@ -14,6 +14,10 @@
 		"AzureKeyVaultLab01_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://kv-dev-frc-lab01.vault.azure.net/"
+		},
+		"AzureTableStorageAdf_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "stdevfrcadf01"
 		}
 	},
 	"variables": {
@@ -56,6 +60,28 @@
 							"type": "LinkedServiceReference"
 						},
 						"secretName": "Emmanuel"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVaultLab01')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureTableStorageAdf')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureTableStorage",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVaultLab01",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('AzureTableStorageAdf_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
@@ -171,6 +197,26 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureTableRunsAdf')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureTableStorageAdf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "RunsAdf"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureTableStorageAdf')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflowBasique')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -230,7 +276,7 @@
 						}
 					],
 					"transformations": [],
-					"script": "parameters{\n\tparameterDateHeureDemarrage as date\n}\nsource(output(\n\t\tDateHeureDynamique as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: (concat(\"SELECT CAST(\",toString($parameterDateHeureDemarrage),\" AS smalldatetime) AS DateHeureDynamique\")),\n\tformat: 'query') ~> sourceDatesEtHeures\nsourceDatesEtHeures sink(input(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDateHeure = DateHeureDynamique\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDatesEtHeures"
+					"script": "parameters{\n\tparameterDateHeureDemarrage as string (\"2018-04-15T13:00:00.0000000Z\")\n}\nsource(output(\n\t\tDateHeureDynamique as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: (concat(\"SELECT CAST(\",toString($parameterDateHeureDemarrage, \"yyyy-MM-dd'T'HH:mm:ss:fffffffK\"),\" AS smalldatetime) AS DateHeureDynamique\")),\n\tformat: 'query') ~> sourceDatesEtHeures\nsourceDatesEtHeures sink(input(\n\t\tDateHeure as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDateHeure = DateHeureDynamique\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sinkDatesEtHeures"
 				}
 			},
 			"dependsOn": [
@@ -243,47 +289,6 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
-					{
-						"name": "dataflowDatesEtHeures",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "SetDateHeureDemarrage",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataflowDatesEtHeures",
-								"type": "DataFlowReference",
-								"parameters": {
-									"parameterDateHeureDemarrage": {
-										"value": "@variables('DateHeureDemarrage')",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"sourceDatesEtHeures": {},
-									"sinkDatesEtHeures": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							}
-						}
-					},
 					{
 						"name": "TestLancerDftBasique",
 						"type": "IfCondition",
@@ -354,15 +359,125 @@
 					{
 						"name": "SetDateHeureDemarrage",
 						"type": "SetVariable",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Copy data3",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"userProperties": [],
 						"typeProperties": {
 							"variableName": "DateHeureDemarrage",
 							"value": {
-								"value": "@utcnow('U')",
+								"value": "@utcnow('o')",
 								"type": "Expression"
 							}
 						}
+					},
+					{
+						"name": "dataflowDatesEtHeures",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SetDateHeureDemarrage",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflowDatesEtHeures",
+								"type": "DataFlowReference",
+								"parameters": {
+									"parameterDateHeureDemarrage": "\"2018-04-15T13:00:00.0000000Z\""
+								},
+								"datasetParameters": {
+									"sourceDatesEtHeures": {},
+									"sinkDatesEtHeures": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					},
+					{
+						"name": "Copy data3",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT ',variables('DateHeureDemarrage'),' AS DateHeure')",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureTableSink",
+								"azureTableInsertType": "merge",
+								"azureTableDefaultPartitionKeyValue": "DateHeure",
+								"writeBatchSize": 10000
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "DateHeure",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "DateHeure"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlTableDatesEtHeures",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureTableRunsAdf",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"variables": {
@@ -370,7 +485,8 @@
 						"type": "Boolean"
 					},
 					"DateHeureDemarrage": {
-						"type": "String"
+						"type": "String",
+						"defaultValue": "'2020-08-19T18:13:00:000000K'"
 					}
 				},
 				"annotations": [
@@ -381,6 +497,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/dataflowDatesEtHeures')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableDatesEtHeures')]",
+				"[concat(variables('factoryId'), '/datasets/AzureTableRunsAdf')]",
 				"[concat(variables('factoryId'), '/dataflows/dataflowBasique')]"
 			]
 		}
