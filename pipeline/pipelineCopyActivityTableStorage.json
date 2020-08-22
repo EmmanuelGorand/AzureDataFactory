@@ -37,12 +37,6 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"additionalColumns": [
-							{
-								"name": "Partition",
-								"value": "PartitionUn"
-							}
-						],
 						"sqlReaderQuery": {
 							"value": "@concat('SELECT ''', variables('DateHeureDemarrage'), ''' AS DateHeure')",
 							"type": "Expression"
