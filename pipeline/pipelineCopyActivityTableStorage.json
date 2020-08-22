@@ -44,7 +44,7 @@
 							}
 						],
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT ''',variables('DateHeureDemarrage'),''' AS DateHeure, 1 AS NumeroPartition')",
+							"value": "@concat('SELECT ''', variables('DateHeureDemarrage'), ''' AS DateHeure')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
