@@ -10,7 +10,7 @@
 				"typeProperties": {
 					"variableName": "DateHeureDemarrage",
 					"value": {
-						"value": "@utcnow('o')",
+						"value": "@convertFromUtc(utcnow('o'),'Romance Standard Time')",
 						"type": "Expression"
 					}
 				}
