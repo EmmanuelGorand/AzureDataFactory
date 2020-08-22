@@ -24,14 +24,7 @@
 			{
 				"name": "SetLancerDftBasique",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "CopyDataHeureDemarrage",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "Lancer DFT basique",
@@ -120,7 +113,14 @@
 			{
 				"name": "dataflowDonneesSfAccount",
 				"type": "ExecuteDataFlow",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "CopyDataHeureDemarrage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
