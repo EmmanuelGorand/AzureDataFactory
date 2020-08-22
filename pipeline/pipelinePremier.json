@@ -66,7 +66,14 @@
 			{
 				"name": "SetDateHeureDemarrage",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy data3",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "DateHeureDemarrage",
@@ -108,76 +115,6 @@
 						"computeType": "General"
 					}
 				}
-			},
-			{
-				"name": "Copy data1",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"enableStaging": false
-				}
-			},
-			{
-				"name": "Copy data2",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "@concat('SELECT ',variables('DateHeureDemarrage'),' AS DateHeureDynamique')",
-							"type": "Expression"
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "AzureTableSink",
-						"azureTableInsertType": "merge",
-						"azureTablePartitionKeyName": {
-							"value": "'DateHeure'",
-							"type": "Expression"
-						},
-						"writeBatchSize": 10000
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "AzureSqlTableDatesEtHeures",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "AzureTableRunsAdf",
-						"type": "DatasetReference"
-					}
-				]
 			},
 			{
 				"name": "Copy data3",
