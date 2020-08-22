@@ -1,0 +1,21 @@
+{
+	"name": "pipelineCopyActivityTableStorage",
+	"properties": {
+		"activities": [
+			{
+				"name": "SetDateHeureDemarrage",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DateHeureDemarrage",
+					"value": {
+						"value": "@utcnow('o')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}
