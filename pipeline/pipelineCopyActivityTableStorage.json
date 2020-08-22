@@ -16,7 +16,7 @@
 				}
 			},
 			{
-				"name": "Copy data heure demarrage",
+				"name": "CopyDataHeureDemarrage",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -37,8 +37,17 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "NomPipeline",
+								"value": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
+								}
+							}
+						],
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT ''', variables('DateHeureDemarrage'), ''' AS DateHeure')",
+							"value": "@concat('SELECT ''', convertFromUtc(utcnow('o'),'Romance Standard Time'), ''' AS DateHeure')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -61,6 +70,14 @@
 								},
 								"sink": {
 									"name": "DateHeure"
+								}
+							},
+							{
+								"source": {
+									"name": "NomPipeline"
+								},
+								"sink": {
+									"name": "NomPipeline"
 								}
 							}
 						],
