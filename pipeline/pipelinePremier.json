@@ -3,35 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "TestLancerDftBasique",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "SetLancerDftBasique",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@equals(variables('Lancer DFT basique'),true)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "SetLancerDftBasique",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "Lancer DFT basique",
-					"value": true
-				}
-			},
-			{
 				"name": "CopyDataHeureDemarrage",
 				"type": "Copy",
 				"dependsOn": [],
@@ -105,7 +76,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureTableRunsAdf",
+						"referenceName": "AzureStorageTableRunsAdf",
 						"type": "DatasetReference"
 					}
 				]
@@ -139,6 +110,54 @@
 						"computeType": "General"
 					}
 				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT ClientNumeroduCompte, Id FROM sf.[REC Données Account]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureTableSink",
+						"azureTableInsertType": "merge",
+						"azureTableDefaultPartitionKeyValue": "ClefPartitionSfAccount1",
+						"writeBatchSize": 10000
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlTableSfAccount",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureStorageTableSfAccount",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"variables": {
