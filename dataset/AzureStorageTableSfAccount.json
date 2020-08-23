@@ -1,0 +1,15 @@
+{
+	"name": "AzureStorageTableSfAccount",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureTableStorageAdf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "SfAccount"
+		}
+	}
+}
