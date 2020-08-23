@@ -132,7 +132,7 @@
 					},
 					"sink": {
 						"type": "AzureTableSink",
-						"azureTableInsertType": "merge",
+						"azureTableInsertType": "replace",
 						"azureTableDefaultPartitionKeyValue": "ClefPartitionSfAccount1",
 						"azureTableRowKeyName": {
 							"value": "Id",
@@ -146,17 +146,6 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "ClientNumeroduCompte",
-									"type": "String",
-									"physicalType": "nvarchar"
-								},
-								"sink": {
-									"name": "PartitionKey",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"name": "Id",
 									"type": "String",
 									"physicalType": "nvarchar"
@@ -164,6 +153,17 @@
 								"sink": {
 									"name": "RowKey",
 									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ClientNumeroduCompte",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "ClientNumeroduCompte",
+									"type": "Int32"
 								}
 							}
 						],
