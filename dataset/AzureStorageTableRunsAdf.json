@@ -1,5 +1,5 @@
 {
-	"name": "AzureTableRunsAdf",
+	"name": "AzureStorageTableRunsAdf",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureTableStorageAdf",
