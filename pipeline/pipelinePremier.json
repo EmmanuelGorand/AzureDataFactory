@@ -112,7 +112,7 @@
 				}
 			},
 			{
-				"name": "Copy data1",
+				"name": "Copy data SF Account",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -134,11 +134,39 @@
 						"type": "AzureTableSink",
 						"azureTableInsertType": "merge",
 						"azureTableDefaultPartitionKeyValue": "ClefPartitionSfAccount1",
+						"azureTableRowKeyName": {
+							"value": "Id",
+							"type": "Expression"
+						},
 						"writeBatchSize": 10000
 					},
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ClientNumeroduCompte",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "PartitionKey",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Id",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "RowKey",
+									"type": "String"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
