@@ -82,8 +82,8 @@
 				]
 			},
 			{
-				"name": "dataflowDonneesSfAccount",
-				"type": "ExecuteDataFlow",
+				"name": "Copy data SF Account",
+				"type": "Copy",
 				"dependsOn": [
 					{
 						"activity": "CopyDataHeureDemarrage",
@@ -92,29 +92,6 @@
 						]
 					}
 				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "dataflowDonneesSfAccount",
-						"type": "DataFlowReference"
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					}
-				}
-			},
-			{
-				"name": "Copy data SF Account",
-				"type": "Copy",
-				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -141,6 +118,7 @@
 						"writeBatchSize": 10000
 					},
 					"enableStaging": false,
+					"dataIntegrationUnits": 2,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
