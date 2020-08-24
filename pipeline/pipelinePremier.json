@@ -103,7 +103,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT ClientNumeroduCompte, Id AS RowKey FROM sf.[REC Données Account]",
+						"sqlReaderQuery": "SELECT ClientNumeroduCompte, Id AS RowKey FROM [sf].[REC Données Account]",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -124,8 +124,7 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "Id",
-									"type": "String",
+									"name": "RowKey",
 									"physicalType": "nvarchar"
 								},
 								"sink": {
