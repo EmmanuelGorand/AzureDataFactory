@@ -110,7 +110,7 @@
 					"sink": {
 						"type": "AzureTableSink",
 						"azureTableInsertType": "replace",
-						"azureTableDefaultPartitionKeyValue": "ClefPartitionSfAccount1",
+						"azureTableDefaultPartitionKeyValue": "ClefPartitionSfAccount11",
 						"azureTableRowKeyName": {
 							"value": "Id",
 							"type": "Expression"
