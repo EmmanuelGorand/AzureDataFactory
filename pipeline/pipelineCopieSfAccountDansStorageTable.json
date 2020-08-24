@@ -1,5 +1,5 @@
 {
-	"name": "pipelinePremier",
+	"name": "pipelineCopieSfAccountDansStorageTable",
 	"properties": {
 		"activities": [
 			{
@@ -82,7 +82,7 @@
 				]
 			},
 			{
-				"name": "Copy data1",
+				"name": "CopySfAccount",
 				"type": "Copy",
 				"dependsOn": [
 					{
