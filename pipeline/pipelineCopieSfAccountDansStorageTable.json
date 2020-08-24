@@ -36,7 +36,8 @@
 					"sink": {
 						"type": "AzureTableSink",
 						"azureTableInsertType": "merge",
-						"azureTableDefaultPartitionKeyValue": "DateHeure",
+						"azureTableDefaultPartitionKeyValue": "NomPipeline",
+						"azureTableRowKeyName": "DateHeure",
 						"writeBatchSize": 10000
 					},
 					"enableStaging": false,
