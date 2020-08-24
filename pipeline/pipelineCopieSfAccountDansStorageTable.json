@@ -46,19 +46,22 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "DateHeure",
-									"physicalType": "varchar"
+									"name": "NomPipeline"
 								},
 								"sink": {
-									"name": "DateHeure"
+									"name": "PartitionKey",
+									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "NomPipeline"
+									"name": "DateHeure",
+									"type": "String",
+									"physicalType": "varchar"
 								},
 								"sink": {
-									"name": "NomPipeline"
+									"name": "RowKey",
+									"type": "String"
 								}
 							}
 						],
