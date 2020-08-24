@@ -103,14 +103,14 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT ClientNumeroduCompte, Id AS RowKey FROM [sf].[REC Données Account]",
+						"sqlReaderQuery": "SELECT ClientNumeroduCompte FROM [sf].[REC Données Account]",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"sink": {
 						"type": "AzureTableSink",
 						"azureTableInsertType": "replace",
-						"azureTableDefaultPartitionKeyValue": "ClefPartitionSfAccount11",
+						"azureTableDefaultPartitionKeyValue": "ClefPartitionSfAccountADF",
 						"azureTableRowKeyName": {
 							"value": "Id",
 							"type": "Expression"
@@ -124,23 +124,13 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "RowKey",
-									"physicalType": "nvarchar"
-								},
-								"sink": {
-									"name": "RowKey",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
 									"name": "ClientNumeroduCompte",
 									"type": "String",
 									"physicalType": "nvarchar"
 								},
 								"sink": {
-									"name": "ClientNumeroduCompte",
-									"type": "Int32"
+									"name": "RowKey",
+									"type": "String"
 								}
 							}
 						],
