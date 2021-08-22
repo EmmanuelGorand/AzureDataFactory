@@ -10,7 +10,8 @@
 					"referenceName": "AzureKeyVaultLab01",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "stdevfrcadf01"
+				"secretName": "stdevfrcadf01",
+				"secretVersion": ""
 			}
 		}
 	}
